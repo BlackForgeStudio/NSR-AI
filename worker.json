@@ -2,8 +2,8 @@
   "plugin": {
     "latest_version": "1.4.1",
     "features": [
-      "Google API Key Suffix 'AQ.' Compatibility: Added full compatibility for Google's new service-account-bound 'AQ.' API key prefix format alongside the legacy 'AIza' keys in all key parsers, command inputs, and validation checks. This ensures support for newer keys generated via Google AI Studio and protects against the June 2026 legacy key deprecations (applies to both v1.3 and v1.4).",
-      "Overloaded Key Logger Masking: Resolved a console security leak in v1.3 where raw global API keys were printed in plain text during rate-limit or overload warnings; keys are now securely masked to show only the last 4 characters (e.g. '***xxxx'), preventing key leaks in log files."
+      "Google 'AQ.' API Key Support: Added full compatibility for Google's new service-account-bound 'AQ.' API key prefix format alongside the legacy 'AIza' format in all validation and command flows (applies to both v1.3 and v1.4).",
+      "Overloaded Key Logger Masking: Fixed a security leak in v1.3 where raw global API keys were printed in console rate-limit warnings; keys are now securely masked to show only the last 4 characters (e.g. '***xxxx')."
     ]
   },
   "security": {

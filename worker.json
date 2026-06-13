@@ -1,14 +1,24 @@
 {
   "plugin": {
-    "latest_version": "1.4.1",
+    "latest_version": "1.4.2",
     "features": [
-      "Google 'AQ.' API Key Support: Added full compatibility for Google's new service-account-bound 'AQ.' API key prefix format alongside the legacy 'AIza' format in all validation and command flows (applies to both v1.3 and v1.4).",
-      "Overloaded Key Logger Masking: Fixed a security leak in v1.3 where raw global API keys were printed in console rate-limit warnings; keys are now securely masked to show only the last 4 characters (e.g. '***xxxx')."
-    ]
+  "Silently resets bug.txt version on startup if the running plugin version is newer than the stored version to avoid redundant bug fix downloads",
+  "Updates /ai version bug command output to display the correct plugin version and bug version in the format: NSR-AI [pluginVersion]v bug version is [bugVersion]",
+  "Adds support for remote bug fix changelogs, displaying all bug fix details and feature changes asynchronously when using /ai version bug",
+  "Adds support for remote security changelogs, displaying all security patch details and feature changes asynchronously when using /ai version security",
+  "Fixes the knowledge base system by adding fuzzy/keyword search fallback if no exact match is found",
+  "Resolves the admin knowledge key retrieval bug in searchKnowledge() so that admin-only entries are correctly returned",
+  "Supports saving and loading database keys containing periods (.) correctly by dynamically adjusting the pathSeparator to a null byte, and self-healing previously nested sections on startup"
+]
   },
   "security": {
     "version": "3.5",
-    "download_url": "https://github.com/BlackForgeStudio/NSR-AI-API/raw/refs/heads/backend/security/security-3.5.jar"
+    "download_url": "https://github.com/BlackForgeStudio/NSR-AI-API/raw/refs/heads/backend/security/security-3.5.jar",
+    "features": [
+      "Added full security framework compatibility and hook integration with NSR-AI version 1.4+",
+      "Introduced dynamic addon and plugin integrity validation against global ban-lists",
+      "Fixed classloader memory leaks during hot-reloads of the security JAR"
+    ]
   },
   "bugfix_mapping": {
     "1.4": {
@@ -20,6 +30,20 @@
       "version": "1.4.1",
       "download_url": "https://github.com/BlackForgeStudio/NSR-AI-API/raw/refs/heads/backend/bug/NSR-AI-1.4/NSR-AI-1.4.1.jar",
       "restart_required": true
+    },
+    "1.4.2": {
+      "version": "1.4.2",
+      "download_url": "https://github.com/BlackForgeStudio/NSR-AI-API/raw/refs/heads/backend/bug/NSR-AI-1.4/NSR-AI-1.4.2.jar",
+      "restart_required": true,
+      "features": [
+  "Silently resets bug.txt version on startup if the running plugin version is newer than the stored version to avoid redundant bug fix downloads",
+  "Updates /ai version bug command output to display the correct plugin version and bug version in the format: NSR-AI [pluginVersion]v bug version is [bugVersion]",
+  "Adds support for remote bug fix changelogs, displaying all bug fix details and feature changes asynchronously when using /ai version bug",
+  "Adds support for remote security changelogs, displaying all security patch details and feature changes asynchronously when using /ai version security",
+  "Fixes the knowledge base system by adding fuzzy/keyword search fallback if no exact match is found",
+  "Resolves the admin knowledge key retrieval bug in searchKnowledge() so that admin-only entries are correctly returned",
+  "Supports saving and loading database keys containing periods (.) correctly by dynamically adjusting the pathSeparator to a null byte, and self-healing previously nested sections on startup"
+]
     }
   }
 }

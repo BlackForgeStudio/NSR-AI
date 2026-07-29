@@ -5,14 +5,33 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.nsr-ai</groupId>
-  <artifactId>nsr-ai-api</artifactId>
-  <version>3.0-pre</version>
-  <packaging>jar</packaging>
+<groupId>com.nsr-ai</groupId>
+    <artifactId>nsr-ai-api</artifactId>
+    <version>3.5</version>
+    <packaging>jar</packaging>
 
-  <name>NSR-AI API</name>
-  <description>Open-source API for the NSR-AI Minecraft Plugin</description>
-  <url>https://github.com/BlackForge-31/NSR-AI</url>
+    <name>NSR-AI API</name>
+    <description>Open-source API for the NSR-AI Minecraft Plugin</description>
+    <url>https://github.com/BlackForgeStudio/NSR-AI-API</url>
+
+    <licenses>
+        <license>
+            <name>MIT License (with Commons Clause)</name>
+            <url>https://github.com/BlackForgeStudio/NSR-AI-API/blob/main/LICENSE.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>BlackForgeStudio</id>
+            <name>BlackForgeStudio</name>
+            <email>blackforge31@gmail.com</email>
+            <url>https://github.com/BlackForgeStudio</url>
+            <organization>NSR-AI Team</organization>
+            <organizationUrl>https://github.com/BlackForgeStudio</organizationUrl>
+        </developer>
+    </developers>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

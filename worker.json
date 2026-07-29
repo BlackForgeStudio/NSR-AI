@@ -1,6 +1,6 @@
 {
   "plugin": {
-    "latest_version": "1.5.0",
+    "latest_version": "1.5",
     "features": [
       "In-game version & changelog viewer (/ai version, /ai version bug, /ai version security) with async fetch and session caching",
       "New /aia addon and /aia plugin commands for managing addons and inspecting API-connected plugins",

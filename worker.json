@@ -1,15 +1,14 @@
 {
   "plugin": {
-    "latest_version": "1.4.2",
+    "latest_version": "1.5.0",
     "features": [
-  "Silently resets bug.txt version on startup if the running plugin version is newer than the stored version to avoid redundant bug fix downloads",
-  "Updates /ai version bug command output to display the correct plugin version and bug version in the format: NSR-AI [pluginVersion]v bug version is [bugVersion]",
-  "Adds support for remote bug fix changelogs, displaying all bug fix details and feature changes asynchronously when using /ai version bug",
-  "Adds support for remote security changelogs, displaying all security patch details and feature changes asynchronously when using /ai version security",
-  "Fixes the knowledge base system by adding fuzzy/keyword search fallback if no exact match is found",
-  "Resolves the admin knowledge key retrieval bug in searchKnowledge() so that admin-only entries are correctly returned",
-  "Supports saving and loading database keys containing periods (.) correctly by dynamically adjusting the pathSeparator to a null byte, and self-healing previously nested sections on startup"
-]
+      "In-game version & changelog viewer (/ai version, /ai version bug, /ai version security) with async fetch and session caching",
+      "New /aia addon and /aia plugin commands for managing addons and inspecting API-connected plugins",
+      "Smarter system prompt with better self-awareness and stronger resistance to prompt injection",
+      "NSR-AI-API 3.5: interceptors, custom error handlers, per-request parameter control, and RAG knowledge base access for other plugins",
+      "New Markdown-to-Minecraft chat formatter",
+      "Fixed several bugs and performance optimizations"
+    ]
   },
   "security": {
     "version": "3.5",
@@ -36,14 +35,20 @@
       "download_url": "https://github.com/BlackForgeStudio/NSR-AI-API/raw/refs/heads/backend/bug/NSR-AI-1.4/NSR-AI-1.4.2.jar",
       "restart_required": true,
       "features": [
-  "Silently resets bug.txt version on startup if the running plugin version is newer than the stored version to avoid redundant bug fix downloads",
-  "Updates /ai version bug command output to display the correct plugin version and bug version in the format: NSR-AI [pluginVersion]v bug version is [bugVersion]",
-  "Adds support for remote bug fix changelogs, displaying all bug fix details and feature changes asynchronously when using /ai version bug",
-  "Adds support for remote security changelogs, displaying all security patch details and feature changes asynchronously when using /ai version security",
-  "Fixes the knowledge base system by adding fuzzy/keyword search fallback if no exact match is found",
-  "Resolves the admin knowledge key retrieval bug in searchKnowledge() so that admin-only entries are correctly returned",
-  "Supports saving and loading database keys containing periods (.) correctly by dynamically adjusting the pathSeparator to a null byte, and self-healing previously nested sections on startup"
-]
+        "Silently resets bug.txt version on startup if the running plugin version is newer than the stored version to avoid redundant bug fix downloads",
+        "Updates /ai version bug command output to display the correct plugin version and bug version in the format: NSR-AI [pluginVersion]v bug version is [bugVersion]",
+        "Adds support for remote bug fix changelogs, displaying all bug fix details and feature changes asynchronously when using /ai version bug",
+        "Adds support for remote security changelogs, displaying all security patch details and feature changes asynchronously when using /ai version security",
+        "Fixes the knowledge base system by adding fuzzy/keyword search fallback if no exact match is found",
+        "Resolves the admin knowledge key retrieval bug in searchKnowledge() so that admin-only entries are correctly returned",
+        "Supports saving and loading database keys containing periods (.) correctly by dynamically adjusting the pathSeparator to a null byte, and self-healing previously nested sections on startup"
+      ]
+    },
+    "1.5": {
+      "version": "1.5.0",
+      "download_url": "https://github.com/BlackForgeStudio/NSR-AI-API/raw/refs/heads/backend/bug/NSR-AI-1.5/NSR-AI-1.5.jar",
+      "restart_required": true,
+      "features": [ "No bug version is released for this version."]
     }
   }
 }

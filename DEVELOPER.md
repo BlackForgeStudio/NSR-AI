@@ -21,7 +21,7 @@ public class MyAddon extends JavaPlugin {
 
     // Define the API version your addon is built against.
     // This should match the API_VERSION constant in the NSR-AI API you are using.
-    private static final int REQUIRED_API_VERSION = 3; 
+    private static final double REQUIRED_API_VERSION = 3.5; 
 
     @Override
     public void onEnable() {
@@ -99,23 +99,36 @@ public class MyPetHelper {
 ```
 
 ## 3. Modifying Pet Stats (API v3.0-pre+)
-Addons can now programmatically influence the pet system to create training or RPG features.
+Addons can programmatically influence pet attributes to create custom pet training, feeding, or RPG progression mechanics.
 
+Available setter methods in the `NSRaiAPI` class include:
+*   `NSRaiAPI.setPetBond(player, petName, bond)` - Clamps between 0 and 100.
+*   `NSRaiAPI.setPetMood(player, petName, mood)` - Sets emotional states (e.g., `"HAPPY"`, `"SAD"`, `"ANGRY"`, `"NEUTRAL"`, `"HUNGRY"`, `"TIRED"`).
+*   `NSRaiAPI.setPetHunger(player, petName, hunger)` - Clamps between 0 and 100.
+*   `NSRaiAPI.setPetLevel(player, petName, level)` - Modifies pet level.
+*   `NSRaiAPI.setPetHealth(player, petName, health)` - (API v3.5+) Modifies pet health.
+
+### Example: RPG Training & Feeding Logic
 ```java
 public class PetTrainer {
-    public void trainPet(Player player, String petName) {
-        // Increase bond by 5
+    public void trainAndFeedPet(Player player, String petName) {
         AIPet pet = NSRaiAPI.getPet(player, petName);
         if (pet != null) {
+            // Modify bond, level up, set mood, satiate hunger, and heal the pet
             NSRaiAPI.setPetBond(player, petName, pet.getBond() + 5);
+            NSRaiAPI.setPetLevel(player, petName, pet.getLevel() + 1);
             NSRaiAPI.setPetMood(player, petName, "HAPPY");
-            player.sendMessage("You trained " + petName + "! Bond increased.");
+            NSRaiAPI.setPetHunger(player, petName, Math.max(0, pet.getHunger() - 20)); // Satiate hunger
+            NSRaiAPI.setPetHealth(player, petName, Math.min(100.0, pet.getHealth() + 10.0)); // Heal pet
+            
+            player.sendMessage("You trained and fed " + petName + "! Stats updated.");
         }
     }
 }
 ```
 
-## 3. Simple AI Interaction (The Easy Way)
+
+## 4. Simple AI Interaction (The Easy Way)
 
 The API now includes simplified methods to communicate with the AI. You no longer need to manually construct `AIMessage` and `AIResponse` objects.
 
@@ -132,7 +145,7 @@ public class MyAIHelper {
                 .useGlobalApiKey()
                 .execute()
                 .thenAccept(response -> {
-                    System.out.println("AI Response: " + response);
+                    NSRaiAPI.getLogger().info("AI Response: " + response);
                 });
     }
 }
@@ -190,18 +203,16 @@ The core plugin uses an intelligent "Player-First" priority system:
 1.  **Player API Key**: If the player has a personal API key, it is used first (using the player's model settings).
 2.  **Global API Key**: If the player has no keys, the plugin falls back to the server's global API keys.
 
-## 4. Chat Interceptor System (Middleware)
-
-## 4. Knowledge Base Access
+## 6. Knowledge Base Access
 Addons can now read and modify the core NSR-AI knowledge base (`knowledge.yml`).
 ```java
 List<String> keywords = NSRaiAPI.getKnowledgeKeywords();
 NSRaiAPI.addKnowledge("rules", "1. No griefing. 2. Be nice.");
 NSRaiAPI.removeKnowledge("old_event");
 ```
-*Requires `read-knowledge` and `edit-knowledge` permissions.*
+*Note: Knowledge base modifications take effect immediately in the active session.*
 
-## 3. Command Routing & Aliases
+## 7. Command Routing & Aliases
 NSR-AI v1.4 introduces a structured command system for addons.
 
 ### How it works:
@@ -213,7 +224,7 @@ NSR-AI v1.4 introduces a structured command system for addons.
 
 ### Example (SimpleAddon):
 ```java
-NSRaiAPI.registerAddon(new SimpleAddon("AdvancedPlayerStats", "1.0", "Author", "Desc")
+NSRaiAPI.registerAddon(new SimpleAddon("AdvancedPlayerStats", "1.0", "YourName", "Desc")
     .setAlias("aps") // Users type /aia aps stats
     .addCommand("stats", "View your AI stats")
     .onCommandExecution((player, args) -> {
@@ -237,10 +248,22 @@ public class MyAddon implements AIAddon {
         // args[0] will be 'stats' if user typed /aia aps stats
         return "Command received!";
     }
+
+    @Override
+    public String getName() { return "AdvancedPlayerStats"; }
+
+    @Override
+    public String getVersion() { return "1.0"; }
+
+    @Override
+    public String getAuthor() { return "YourName"; }
+
+    @Override
+    public String getDescription() { return "Addon description"; }
 }
 ```
 
-## 6. AI Interceptors (Middleware)
+## 8. AI Interceptors (Middleware)
 Interceptors allow you to read, modify, or cancel AI inputs and outputs.
 ```java
 public class MyMiddleware implements AIInterceptor {
@@ -266,25 +289,56 @@ public class MyMiddleware implements AIInterceptor {
 Register your interceptor once during your addon's `onEnable()`.
 
 ```java
-NSRaiAPI.registerInterceptor(new MyChatMiddleware());
+NSRaiAPI.registerInterceptor(new MyMiddleware());
 ```
 
 > [!IMPORTANT]
-> All interceptors are subject to the server's `permissions.yml`. Admins can globally disable chat reading or editing for specific addons. Make sure your addon handles these cases gracefully!
+> Interceptors operate as middleware in the chat processing pipeline. Ensure your interceptor logic executes efficiently to avoid delaying chat responses.
 
-## 4. Async Data Persistence
+## 8.5 Error Catchers (Error Interception)
+Error catchers allow your addon to passively monitor, actively modify, or completely suppress AI API and runtime errors before they reach the player.
+
+```java
+public class MyErrorHandler implements ErrorCatcher {
+    @Override
+    public String onError(Player player, String errorSource, String errorMessage, Throwable exception) {
+        // 1. Passive Monitoring: Log the error to a custom file or webhook
+        MyAddonLogger.log("AI Error from " + errorSource + ": " + errorMessage);
+
+        // 2. Active Modification: Replace technical errors with immersive RPG lore
+        if (errorMessage.contains("429") || errorMessage.contains("500")) {
+            return "&c[Arcane Tome] The magical arcane spirits are currently resting. Try again soon!";
+        }
+
+        // 3. Explicit Suppression: Return empty string "" to hide the error from the player completely
+        // return "";
+
+        // 4. Pass-through: Return null to keep the default NSR-AI error message
+        return null;
+    }
+}
+```
+
+### Registering the Error Catcher
+Register your error catcher once during your addon's `onEnable()`.
+
+```java
+NSRaiAPI.registerErrorCatcher(new MyErrorHandler());
+```
+
+## 9. Async Data Persistence
 You can now save data to files without worrying about disk lag using the async `SaveMsg` system.
 
 ```java
 NSRaiAPI.saveMsg(plugin, "Some log data", "logs", "ai_chat", SaveMsg.Format.TXT, false)
     .thenAccept(success -> {
         if (success) {
-            System.out.println("File saved successfully in the background!");
+            NSRaiAPI.getLogger().info("File saved successfully in the background!");
         }
     });
 ```
 
-## 5. Session & Memory Management
+## 10. Session & Memory Management
 In v1.4, you have full control over the AI's conversation state.
 
 ### Summarization (Memory Compression)
@@ -319,14 +373,14 @@ NSRaiAPI.updateSharedMemory("global_event", "active");
 Optional<String> status = NSRaiAPI.getSharedMemory("global_event");
 ```
 
-## 6. Flexible Component Reloading
+## 11. Flexible Component Reloading
 You can reload specific parts of the plugin without a full restart.
 ```java
 // Options: FULL, CONFIG, KNOWLEDGE, FEATURES
 NSRaiAPI.reload(NSRaiAPI.ReloadType.KNOWLEDGE);
 ```
 
-## 7. Dynamic Model & Provider Management
+## 12. Dynamic Model & Provider Management
 Addons can now dynamically query or override the AI model and provider.
 
 ### Global Control
@@ -349,8 +403,7 @@ NSRaiAPI.askAI("Write a complex plugin...")
     .execute();
 ```
 
-
-## 7. V1 Legacy Support (Backward Compatibility)
+## 13. V1 Legacy Support (Backward Compatibility)
 NSR-AI 1.4 is designed to be fully backward compatible with older chat addons. If you have code from v1.2 or v1.3, it will still work using these legacy classes.
 
 <details>
@@ -395,12 +448,11 @@ public class MyAIInteraction {
 
 ### Legacy History
 ```java
-List<AIMessage> history = NSRaiAPI.getConversationHistory(player);
+List<AIMessage> history = NSRaiAPI.getConversationHistoryObjects(player);
 ```
 </details>
 
-
-## 5. Complete Addon Registration Guide
+## 14. Complete Addon Registration Guide
 
 To successfully integrate your addon with NSR-AI, there are now two ways:
 1. **The Modern Way (Programmatic):** Build a standard plugin and register via API.
@@ -495,7 +547,7 @@ public class MySimpleAddon implements AIAddon {
     /** Returns the author(s) of your addon. */
     @Override
     public String getAuthor() {
-        return "Gemini";
+        return "YourName";
     }
 
     /** Returns a brief description of your addon. */
@@ -582,7 +634,7 @@ After implementing your `AIAddon` class and configuring `addon.yml` (if using le
 
     Standard Bukkit/Spigot plugins that do not interact with the NSR-AI API can be placed in the main `/plugins/` folder as usual.
 
-## 6. Addon Command Guidelines
+## 15. Addon Command Guidelines
 
 To prevent conflicts with the core plugin's commands and to ensure a consistent user experience, all addons must follow these command registration rules:
 
@@ -603,11 +655,11 @@ In specific cases, you may register a sub-command under the main `/ai` command (
 
 Failure to follow these guidelines may result in your addon being blocked by the core plugin's security manager.
 
-## 7. Further Assistance
+## 16. Further Assistance
 
-For any further questions or issues, please refer to the main `README.md` or open an issue in this repository.
+For any further questions or issues, please refer to the main `README.md` or open issue on the NSR-AI-API issue section.
 
-## 8. Addon Recommendations & Freedom of Development
+## 17. Addon Recommendations & Freedom of Development
 
 We want to encourage you to build whatever you can imagine! The NSR-AI ecosystem thrives on developer creativity, and we want to see your unique ideas come to life.
 
@@ -617,4 +669,3 @@ We want to encourage you to build whatever you can imagine! The NSR-AI ecosystem
 *   **Get Recommended:** If you want your addon or plugin to be officially recommended or featured by the NSR-AI team, simply **open a ticket on our official GitHub repository**. We will review your work for stability and quality; if it's good, we'll happily feature it to our users!
 
 Happy coding, and we can't wait to see what you build!
-

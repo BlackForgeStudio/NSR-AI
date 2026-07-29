@@ -1,6 +1,6 @@
 # NSR-AI Open-Source API
 
-![Version](https://img.shields.io/badge/Version-3.0--pre-blue.svg)
+![Version](https://img.shields.io/badge/Version-3.5-blue.svg)
 
 This is the official open-source API for the NSR-AI Minecraft Plugin. It allows developers to interact with core NSR-AI functionalities in a safe and controlled manner.
 
@@ -14,23 +14,32 @@ Add the following to your `pom.xml`:
     <dependency>
         <groupId>com.nsr-ai</groupId>
         <artifactId>nsr-ai-api</artifactId>
-        <version>3.0-pre</version> <!-- Use the current API version -->
+        <version>3.5</version> <!-- Use the current API version -->
         <scope>provided</scope>
     </dependency>
 </dependencies>
 ```
 
-*   **Knowledge Base Bridge (RAG):** Programmatically read, add, or remove entries from the server's `knowledge.yml`.
-*   **Pet AI System (AIPet):** Programmatically access and modify pet data (Bond, Mood, Hunger, Level) using the `AIPet` class.
-*   **Universal Command Routing (`/aia`):** Delegate complex command structures and tab completion to your addon via the `/aia` namespace.
-*   **Chat Interceptor System (Middleware):** Register an `AIInterceptor` to read, modify, or cancel player inputs, AI responses, and **system prompts**.
-*   **Flexible AI Parameters:** Control `Temperature`, `Top-P`, `Top-K`, and `Max Tokens` programmatically for each AI request.
-*   **Asynchronous Architecture:** All AI requests and file operations (`SaveMsg`) are non-blocking, ensuring maximum server performance (20 TPS).
-*   **Custom Parameter Injection:** Inject provider-specific JSON parameters (like `presence_penalty`) into the request body.
-*   **Plugin Integrations:** Standard Bukkit Plugins can now officially register their integrations directly with NSR-AI using `NSRaiAPI.registerPlugin()`.
-*   **SimpleAddon Builder:** Enhanced with `.onTabCompleteHandler()` and command mapping logic.
-*   **Chat System Isolation:** `NSRaiAPI.askAI()` now provides a clean AI context without core plugin prompt injection.
-*   **Async Persistence (SaveMsg):** Use `SaveMsg` to save data in JSON, YML, TXT, or DAT formats asynchronously without blocking the main thread.
+## New Features in API 3.5
+
+*   **Asynchronous Error Catcher Pipeline (`ErrorCatcher`):** Register error handlers to passively monitor, actively modify, or completely suppress AI API and runtime errors before they reach the player.
+*   **Legacy V1 Sub-Package Migration (`com.nsr.ai.api.v1`):** Cleaned up the root API directory by moving all 8 legacy support classes (`AIMessage`, `AIResponse`, `AddonInfo`, etc.) into a dedicated `v1` sub-package for pristine organization and seamless backward compatibility.
+*   **Pet Health Modification (`setPetHealth`):** Added the missing programmatic pet health modification endpoint to the API bridge (`NSRaiAPI.setPetHealth`), enabling complete dynamic pet stat manipulation.
+
+
+<details>
+<summary><b>📦 Click to view API 3.0-pre Features</b></summary>
+
+*   **Facade Delegation Architecture:** Seamlessly routes legacy V1/V2 API calls to V3 endpoints, preserving full backward compatibility without breaking existing addons.
+*   **Dynamic Pet Stat Manipulation:** Programmatically modify pet attributes (`Bond`, `Mood`, `Hunger`, `Level`, `Health`) to build custom pet training or RPG integrations.
+*   **Asynchronous Chat Interceptor Pipeline:** Register middleware (`AIInterceptor`) to inspect, sanitize, modify, or cancel player inputs, AI responses, and system prompts.
+*   **Granular AI Request Parameters:** Programmatically inject custom provider settings (`Temperature`, `Top-P`, `Top-K`, `Max Tokens`, `presence_penalty`) per individual AI request.
+*   **Live Knowledge Base Bridge (RAG):** Dynamically read, inject, or remove vector knowledge base entries directly from active server memory.
+*   **Universal Command Routing (`/aia`):** Effortlessly delegate complex subcommands and tab completions directly to your addon or plugin integration.
+*   **Non-Blocking Persistence (`SaveMsg`):** Asynchronously save addon data in JSON, YML, TXT, or DAT formats without blocking the primary server thread.
+*   **Native Plugin Integration Builder (`SimpleAddon`):** Standard Bukkit plugins can now natively register as NSR-AI integrations without needing an `addon.yml` manifest.
+
+</details>
 
 ## Example: The Easiest Way to Register (SimpleAddon)
 
@@ -117,6 +126,8 @@ public class MyAddon extends JavaPlugin implements AIAddon {
 
 This API layer *does not* include any of the proprietary or closed-source features of the main NSR-AI plugin, such as:
 
+*   NPC AI System (Spawning, Pathfinding, Interactions) – Upcoming Feature (Coming Soon)
+*   Advanced Memory System for AI Entities – Implemented, currently in testing phase
 *   Offline AI integrations (e.g., Ollama, LLaMA, local models)
 *   Direct API key expansions for external services (e.g., Gemini, OpenAI, Claude)
 *   Scripted or canned response systems
@@ -144,23 +155,16 @@ Developers should depend on specific version tags (e.g., `1.2.0`) for stability.
 *   **Developer Guide:** For detailed information on API usage, versioning, and feature detection, please refer to [DEVELOPER.md](DEVELOPER.md).
 *   **Security Policy:** For information on addon compliance, prohibited actions, and security updates, please refer to [SECURITY.md](SECURITY.md).
 
-## full repo tree of BlackForgeStudio/NSR-AI-API:
+## full repo tree of BlackForgeStudio/NSR-AI:
 
 ```directory tree
-NSR-AI-API/
+NSR-AI/
 ├── .github/
-│   └── ISSUE_TEMPLATE/
-│       ├── api_bug_report.yml
-│       ├── api_feature_request.yml
-│       ├── bug_report.yml
-│       └── feature_request.yml
-│
 ├── DEVELOPER.md
 ├── LICENSE.txt
 ├── README.md
 ├── SECURITY.md
 ├── pom.xml
-│
 └── src/
     └── main/
         └── java/
@@ -168,28 +172,24 @@ NSR-AI-API/
                 └── nsr/
                     └── ai/
                         └── api/
-                            ├── AddonInfo.java
-                            ├── AIAddon.java
-                            ├── AIInterceptor.java
-                            ├── AIMessage.java
-                            ├── AIPet.java
-                            ├── AIResponse.java
-                            ├── AskAI.java
-                            ├── CustomGUIProvider.java
-                            ├── GUIBuilder.java
-                            ├── GUIListener.java
-                            ├── NPCListener.java
-                            ├── NSRAI.java
-                            ├── NSRaiAPI.java
-                            ├── PetDataSnapshot.java
-                            ├── PetListener.java
-                            ├── SaveMsg.java
-                            ├── SecurityStatus.java
-                            ├── SendChat.java
-                            ├── SimpleAddon.java
-                            │
-                            └── events/
-                                └── AIChatEvent.java
+                             ├── AIAddon.java
+                             ├── AIInterceptor.java
+                             ├── AIPet.java
+                             ├── AskAI.java
+                             ├── NSRaiAPI.java
+                             ├── SaveMsg.java
+                             ├── SendChat.java
+                             ├── SimpleAddon.java
+                             └── v1/
+                                 ├── AddonInfo.java
+                                 ├── AIMessage.java
+                                 ├── AIResponse.java
+                                 ├── CustomGUIProvider.java
+                                 ├── GUIListener.java
+                                 ├── NPCListener.java
+                                 ├── NSRAI.java
+                                 ├── PetDataSnapshot.java
+                                 └── PetListener.java
 ```
 
 ## For Addon Developers

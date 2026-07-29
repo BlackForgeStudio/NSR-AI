@@ -11,6 +11,10 @@ import java.util.Map;
  */
 public interface AIAddon {
 
+    /**
+     * Called when your addon is enabled by the NSR-AI core plugin.
+     * @param plugin The NSR-AI plugin instance. Can be cast to NSRAIPlugin for extended access.
+     */
     default void onEnable(Plugin plugin) {}
 
     default void onDisable() {}

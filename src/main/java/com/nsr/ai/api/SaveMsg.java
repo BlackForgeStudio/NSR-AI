@@ -42,14 +42,11 @@ public class SaveMsg {
                         fos.write(content.getBytes(StandardCharsets.UTF_8));
                     }
                 } else {
-                    try (FileWriter writer = new FileWriter(file)) {
-                        writer.write(content);
-                    }
+                    java.nio.file.Files.writeString(file.toPath(), content, StandardCharsets.UTF_8);
                 }
                 return true;
             } catch (IOException e) {
-                e.printStackTrace();
-                return false;
+                throw new java.io.UncheckedIOException(e);
             }
         });
     }

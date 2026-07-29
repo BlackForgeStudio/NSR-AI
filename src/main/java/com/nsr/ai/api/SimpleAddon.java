@@ -21,6 +21,8 @@ public class SimpleAddon implements AIAddon {
     private final Map<String, String> commands = new HashMap<>();
     private BiFunction<Player, String[], String> commandHandler = (player, args) -> null;
     private BiFunction<Player, String[], java.util.List<String>> tabHandler = (player, args) -> java.util.Collections.emptyList();
+    private java.util.function.Consumer<org.bukkit.plugin.Plugin> enableHandler = p -> {};
+    private Runnable disableHandler = () -> {};
 
     public SimpleAddon(String name, String version, String author, String description) {
         this.name = name;
@@ -70,6 +72,32 @@ public class SimpleAddon implements AIAddon {
         return this;
     }
 
+    /**
+     * Sets the enable lifecycle handler.
+     */
+    public SimpleAddon onEnable(java.util.function.Consumer<org.bukkit.plugin.Plugin> handler) {
+        this.enableHandler = handler;
+        return this;
+    }
+
+    /**
+     * Sets the disable lifecycle handler.
+     */
+    public SimpleAddon onDisable(Runnable handler) {
+        this.disableHandler = handler;
+        return this;
+    }
+
+    @Override
+    public void onEnable(org.bukkit.plugin.Plugin plugin) {
+        enableHandler.accept(plugin);
+    }
+
+    @Override
+    public void onDisable() {
+        disableHandler.run();
+    }
+
     @Override
     public String onCommand(Player player, String[] args) {
         return commandHandler.apply(player, args);
@@ -82,12 +110,12 @@ public class SimpleAddon implements AIAddon {
 
     @Override
     public Map<String, String> getCommands() {
-        return commands;
+        return java.util.Collections.unmodifiableMap(commands);
     }
 
     @Override
     public Map<String, String> getFeatures() {
-        return features;
+        return java.util.Collections.unmodifiableMap(features);
     }
 
     @Override

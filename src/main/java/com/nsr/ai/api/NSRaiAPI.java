@@ -5,9 +5,9 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-import com.nsr.ai.api.AIMessage;
-import com.nsr.ai.api.AIResponse;
-import com.nsr.ai.api.AddonInfo;
+import com.nsr.ai.api.v1.AIMessage;
+import com.nsr.ai.api.v1.AIResponse;
+import com.nsr.ai.api.v1.AddonInfo;
 import com.nsr.ai.api.AIInterceptor;
 import com.nsr.ai.api.AskAI;
 import com.nsr.ai.api.SendChat;
@@ -28,13 +28,17 @@ public final class NSRaiAPI {
      * The current major version of the NSR-AI Open-Source API.
      * Addons should check this value for compatibility.
      */
-    public static final int API_VERSION = 3;
+    public static final double API_VERSION = 3.5;
 
     // Internal core plugin reference (set via reflection by the core plugin)
     private static Object internalApiInstance;
 
+    /**
+     * @deprecated Utility class with static methods. Direct instantiation is discouraged. Use static methods directly.
+     */
+    @Deprecated
     public NSRaiAPI() {
-        // Public constructor to allow instantiation (getApi() pattern)
+        // Public constructor maintained for legacy getApi() pattern
     }
 
     /**
@@ -53,9 +57,10 @@ public final class NSRaiAPI {
      * @param paramTypes An array of Class objects representing the parameter types of the method.
      * @param args The arguments to pass to the method.
      * @param <T> The return type of the method.
-     * @return The result of the internal method call.
+     * @return The result of the internal method call (may be null if the internal method returns null).
      * @throws IllegalStateException if the internal API is not initialized, the method is not found,
      *                                an access error occurs, or the internal method throws an exception.
+     * @throws ClassCastException if the expected return type T does not match the actual return type of the internal method.
      */
     public static <T> T callInternalMethod(String methodName, Class<?>[] paramTypes, Object... args) {
         if (internalApiInstance == null) {
@@ -154,7 +159,7 @@ public final class NSRaiAPI {
         return callInternalMethod("getVersion", new Class<?>[]{});
     }
 
-    public static int getApiVersion() {
+    public static double getApiVersion() {
         return API_VERSION;
     }
 
@@ -172,11 +177,11 @@ public final class NSRaiAPI {
         return callInternalMethod("getRegisteredAddons", new Class<?>[]{});
     }
 
-    public static java.util.List<com.nsr.ai.api.AddonInfo> getLoadedAddons() {
+    public static java.util.List<AddonInfo> getLoadedAddons() {
         return callInternalMethod("getLoadedAddonInfo", new Class<?>[]{});
     }
 
-    public static java.util.List<com.nsr.ai.api.AddonInfo> getFailedAddons() {
+    public static java.util.List<AddonInfo> getFailedAddons() {
         return callInternalMethod("getFailedAddonInfo", new Class<?>[]{});
     }
 
@@ -188,6 +193,10 @@ public final class NSRaiAPI {
         return callInternalMethod("getPlugin", new Class<?>[]{});
     }
 
+    /**
+     * @deprecated NSRaiAPI has no instance state. Use static methods directly instead of getApi().
+     */
+    @Deprecated
     public static NSRaiAPI getApi() {
         return new NSRaiAPI();
     }
@@ -348,7 +357,16 @@ public final class NSRaiAPI {
         callInternalMethod("setPetLevelForAPI", new Class<?>[]{Player.class, String.class, int.class}, player, name, level);
     }
 
+    public static void setPetHealth(Player player, String name, double health) {
+        callInternalMethod("setPetHealthForAPI", new Class<?>[]{Player.class, String.class, double.class}, player, name, health);
+    }
+
+
     public static void registerInterceptor(AIInterceptor interceptor) {
         callInternalMethod("registerInterceptor", new Class<?>[]{AIInterceptor.class}, interceptor);
+    }
+
+    public static void registerErrorCatcher(ErrorCatcher errorCatcher) {
+        callInternalMethod("registerErrorCatcher", new Class<?>[]{ErrorCatcher.class}, errorCatcher);
     }
 }

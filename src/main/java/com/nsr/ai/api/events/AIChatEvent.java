@@ -40,7 +40,14 @@ public class AIChatEvent extends Event implements Cancellable {
     private String response;
     private boolean cancelled;
 
+    /**
+     * Fired asynchronously when a player interacts with the AI.
+     * @param player The player.
+     * @param message The original message sent by the player (immutable to preserve accurate chat logging).
+     * @param response The initial AI response (mutable by addons).
+     */
     public AIChatEvent(Player player, String message, String response) {
+        super(true); // Fired asynchronously from the AI response worker thread
         this.player = player;
         this.message = message;
         this.response = response;

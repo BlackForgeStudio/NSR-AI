@@ -11,12 +11,10 @@
     ]
   },
   "security": {
-    "version": "3.5",
-    "download_url": "https://github.com/BlackForgeStudio/NSR-AI-API/raw/refs/heads/backend/security/security-3.5.jar",
+    "version": "3.6",
+    "download_url": "https://github.com/BlackForgeStudio/NSR-AI-API/raw/refs/heads/backend/security/security-3.6.jar",
     "features": [
-      "Added full security framework compatibility and hook integration with NSR-AI version 1.4+",
-      "Introduced dynamic addon and plugin integrity validation against global ban-lists",
-      "Fixed classloader memory leaks during hot-reloads of the security JAR"
+      "Added bStats metrics telemetry feature available publicly on bStats under plugin name 'NSR AI' (Plugin ID: 32982)"
     ]
   },
   "bugfix_mapping": {

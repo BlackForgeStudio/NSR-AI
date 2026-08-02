@@ -11,11 +11,11 @@
     ]
   },
   "security": {
-    "version": "3.7",
-    "download_url": "https://github.com/BlackForgeStudio/NSR-AI-API/raw/refs/heads/backend/security/security-3.7.jar",
+    "version": "3.8",
+    "download_url": "https://github.com/BlackForgeStudio/NSR-AI-API/raw/refs/heads/backend/security/security-3.8.jar",
     "features": [    
       "(v3.6) Added bStats metrics telemetry (Available publicly on bStats under plugin name 'NSR AI', Plugin ID: 32982).",
-      "(v3.7) Improved telemetry accuracy with real-time event capture for AI models, API providers, and response latency distribution."
+      "(v3.8) Improved telemetry accuracy with real-time event capture for AI models, API providers, and response latency distribution."
     ]
   },
   "bugfix_mapping": {

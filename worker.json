@@ -25,8 +25,8 @@
       "restart_required": true
     },
     "1.4.1": {
-      "version": "1.4.1",
-      "download_url": "https://github.com/BlackForgeStudio/NSR-AI-API/raw/refs/heads/backend/bug/NSR-AI-1.4/NSR-AI-1.4.1.jar",
+      "version": "1.4.2",
+      "download_url": "https://github.com/BlackForgeStudio/NSR-AI-API/raw/refs/heads/backend/bug/NSR-AI-1.4/NSR-AI-1.4.2.jar",
       "restart_required": true
     },
     "1.4.2": {
